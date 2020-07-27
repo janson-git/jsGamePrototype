@@ -1,8 +1,8 @@
 var Player = {
     x: undefined,
     y: undefined,
-    sizeX: 10,
-    sizeY: 10,
+    sizeX: 6,
+    sizeY: 6,
     drawedX: undefined,
     drawedY: undefined,
 
@@ -38,8 +38,8 @@ var Player = {
         // сейчас игрок - это маленький квадратик
         // удалим старое изображение и нарисуем новую позицию
         if (this.drawedX && this.drawedY) {
-            ctx.fillStyle = 'rgb(255, 255, 255)';
-            ctx.fillRect(this.drawedX - (this.sizeX/2), this.drawedY - (this.sizeY/2), this.sizeX, this.sizeY);
+            // ctx.fillStyle = 'rgb(255, 255, 255)';
+            ctx.clearRect(this.drawedX - (this.sizeX/2), this.drawedY - (this.sizeY/2), this.sizeX, this.sizeY);
         }
 
         ctx.fillStyle = 'rgb(200, 0, 0)';
