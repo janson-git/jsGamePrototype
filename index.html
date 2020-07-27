@@ -1,0 +1,50 @@
+<html>
+<head>
+<style>
+body {
+	margin: 0px;
+	padding: 0px;
+}
+</style>
+</head>
+<body onload="gameStart()">
+
+<canvas id="canvas" width="500" height="500" style="border: 1px solid #000;"></canvas>
+
+<script src="jquery.js"></script>
+<script src="src/Keyboard.js"></script>
+<script src="src/Player.js"></script>
+<script src="src/Game.js"></script>
+
+<script>
+    function gameStart() {
+        var canvas = document.getElementById("canvas");
+
+        // проверка совместимости браузера с canvas
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d');
+            // drawing code here
+
+            console.log('Canvas context found! Ok.');
+
+            // добавим обработчики нажатий
+            window.addEventListener('keyup', function (event) {
+                Keyboard.onKeyup(event);
+            }, false);
+            window.addEventListener('keydown', function (event) {
+                Keyboard.onKeydown(event);
+            }, false);
+
+            var player = Player.init(100, 100);
+
+            Game.init(ctx, Player); // TODO: add player
+            Game.start();
+
+        } else {
+            canvas.innerText = 'Canvas not supported!';
+        }
+    }
+</script>
+
+</body>
+</html>
