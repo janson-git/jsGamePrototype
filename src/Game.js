@@ -6,16 +6,18 @@ var Game = {
     lastTick: undefined,
     lastRender: undefined,
     tickLength: undefined,
+    canvas: {},
     canvasCtx: {},
     player: {},
 
-    init: function(canvasCtx, player) {
-        this.canvasCtx = canvasCtx;
+    init: function(canvas, player) {
+        this.canvas = canvas;
+        this.canvasCtx = canvas.getContext('2d');
         this.player = player;
 
         this.lastTick = performance.now();
         this.lastRender = this.lastTick;
-        this.tickLenght = 1000 / this.fps;
+        this.tickLength = 1000 / this.fps;
 
         this.setInitialState();
     },
@@ -30,7 +32,7 @@ var Game = {
 
     main: function(tFrame) {
 
-        this.stopMain = window.requestAnimationFrame(Game.main);
+        Game.stopMain = window.requestAnimationFrame(Game.main);
 
         var nextTick = Game.lastTick + Game.tickLength;
         var numTicks = 0;
@@ -58,12 +60,13 @@ var Game = {
         }
     },
 
-    update: function() {
-        // TODO: ОБРАБОТКА ВВОДА КЛАВИАТУРЫ!!! СЕЙЧАС ВНУТРИ request animation frame это не работает
+    update: function(lastTick) {
         this.player.update();
     },
 
     render: function() {
+        this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
         // Game drawing process
         this.player.draw(this.canvasCtx);
     }

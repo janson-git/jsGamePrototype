@@ -18,6 +18,14 @@
         width: 100%;
         height: 100%;
     }
+    #debug_bar {
+        border: 1px solid #666;
+        width: 500px;
+        height: 100px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 </style>
 </head>
 <body onload="gameStart()">
@@ -25,6 +33,7 @@
 <div id="canvas_wrapper">
     <canvas id="canvas" width="500" height="400"></canvas>
 </div>
+<div id="debug_bar"></div>
 
 <script src="jquery.js"></script>
 <script src="src/Keyboard.js"></script>
@@ -37,9 +46,6 @@
 
         // проверка совместимости браузера с canvas
         if (canvas.getContext) {
-            var ctx = canvas.getContext('2d');
-            // drawing code here
-
             console.log('Canvas context found! Ok.');
 
             // добавим обработчики нажатий
@@ -52,7 +58,7 @@
 
             var player = Player.init(100, 100);
 
-            Game.init(ctx, Player); // TODO: add player
+            Game.init(canvas, Player); // TODO: add player
             Game.play();
 
         } else {
