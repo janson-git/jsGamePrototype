@@ -1,6 +1,6 @@
 
 var Game = {
-    fps: 60,
+    fps: 30,
     g: 15,
     stopMain: undefined,
     lastTick: undefined,

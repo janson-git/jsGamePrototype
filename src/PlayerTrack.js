@@ -20,7 +20,7 @@ var PlayerTrack = {
         });
 
         var tickDiff = tick - this.lastTick;
-        if (tickDiff > this.TRACKS_INTERVAL_IN_TICKS) {
+        if (tickDiff > PlayerTrack.TRACKS_INTERVAL_IN_TICKS) {
             this.lastTick = tick;
 
             var player = this.player;
@@ -38,12 +38,12 @@ var PlayerTrack = {
                     return {x: this.x, y: this.y, sizeX: this.sizeX, sizeY: this.sizeY, alpha: this.alpha};
                 },
                 update: function() {
-                    this.alpha *= this.ALPHA_DEGRADATION_STEP;
+                    this.alpha *= PlayerTrack.ALPHA_DEGRADATION_STEP;
                 }
             });
 
             // чистим хвост от старых следов
-            if (this.tracks.length > this.DISPLAYED_TRACKS_NUM) {
+            if (this.tracks.length > PlayerTrack.DISPLAYED_TRACKS_NUM) {
                 this.tracks.shift();
             }
         }
