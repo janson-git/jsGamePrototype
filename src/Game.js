@@ -9,11 +9,15 @@ var Game = {
     canvas: {},
     canvasCtx: {},
     player: {},
+    playerTrack: {}, // след за игроком
 
     init: function(canvas, player) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.player = player;
+        PlayerTrack.init(this.player);
+
+        this.playerTrack = PlayerTrack;
 
         this.lastTick = performance.now();
         this.lastRender = this.lastTick;
@@ -61,13 +65,15 @@ var Game = {
     },
 
     update: function(lastTick) {
-        this.player.update();
+        this.player.update(lastTick);
+        this.playerTrack.update(lastTick);
     },
 
     render: function() {
         this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Game drawing process
+        this.playerTrack.draw(this.canvasCtx);
         this.player.draw(this.canvasCtx);
     }
 };

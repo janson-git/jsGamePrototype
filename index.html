@@ -38,6 +38,7 @@
 <script src="jquery.js"></script>
 <script src="src/Keyboard.js"></script>
 <script src="src/Player.js"></script>
+<script src="src/PlayerTrack.js"></script>
 <script src="src/Game.js"></script>
 
 <script>
@@ -56,7 +57,7 @@
                 Keyboard.onKeydown(event);
             }, false);
 
-            var player = Player.init(100, 100);
+            Player.init(100, 100);
 
             Game.init(canvas, Player); // TODO: add player
             Game.play();
