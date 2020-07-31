@@ -18,13 +18,26 @@
         width: 100%;
         height: 100%;
     }
-    #debug_bar {
+    #debug_monitor {
         border: 1px solid #666;
         width: 500px;
         height: 100px;
         margin-top: 10px;
         margin-left: auto;
         margin-right: auto;
+    }
+    #help {
+        border: 1px solid #666;
+        width: 500px;
+        height: 100px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #help span {
+        width: 200px;
+        padding: 2px 5px;
+        display: inline-block;
     }
 </style>
 </head>
@@ -33,10 +46,18 @@
 <div id="canvas_wrapper">
     <canvas id="canvas" width="500" height="400"></canvas>
 </div>
-<div id="debug_bar"></div>
+<div id="debug_monitor"></div>
+<div id="help">
+    <span>LEFT - turn left</span>
+    <span>RIGHT - turn right</span>
+    <span>UP - speed up</span>
+    <span>DOWN - backward move</span>
+    <span>SPACE - break</span>
+</div>
 
 <script src="jquery.js"></script>
 <script src="src/Keyboard.js"></script>
+<script src="src/Constants/Direction.js"></script>
 <script src="src/Player.js"></script>
 <script src="src/PlayerTrack.js"></script>
 <script src="src/Game.js"></script>
@@ -57,9 +78,10 @@
                 Keyboard.onKeydown(event);
             }, false);
 
-            Player.init(100, 100);
+            Player.init(100, 100, Direction.NORTH);
 
-            Game.init(canvas, Player); // TODO: add player
+            var debugMonitor = document.getElementById('debug_monitor')
+            Game.init(canvas, debugMonitor, Player); // TODO: add player
             Game.play();
 
         } else {

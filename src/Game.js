@@ -5,15 +5,18 @@ var Game = {
     stopMain: undefined,
     lastTick: undefined,
     lastRender: undefined,
-    tickLength: undefined,
+    tickLength: 50, // ms
+    renderInterval: undefined,
     canvas: {},
+    debugMonitor: undefined,
     canvasCtx: {},
     player: {},
     playerTrack: {}, // след за игроком
 
-    init: function(canvas, player) {
+    init: function(canvas, debugMonitor, player) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
+        this.debugMonitor = debugMonitor;
         this.player = player;
         PlayerTrack.init(this.player);
 
@@ -21,7 +24,7 @@ var Game = {
 
         this.lastTick = performance.now();
         this.lastRender = this.lastTick;
-        this.tickLength = 1000 / this.fps;
+        this.renderInterval = 1000 / this.fps;
 
         this.setInitialState();
     },
@@ -39,6 +42,7 @@ var Game = {
         Game.stopMain = window.requestAnimationFrame(Game.main);
 
         var nextTick = Game.lastTick + Game.tickLength;
+        var nextRender = Game.lastRender + Game.renderInterval;
         var numTicks = 0;
 
         // If tFrame < nextTick then 0 ticks need to be updated (0 is default for numTicks).
@@ -52,9 +56,11 @@ var Game = {
 
         // Main game loop content here!
         Game.queueUpdates( numTicks );
-        Game.render(tFrame);
 
-        this.lastRender = tFrame;
+        if (tFrame > nextRender) {
+            Game.render(tFrame);
+            Game.lastRender = tFrame;
+        }
     },
 
     queueUpdates: function( numTicks ) {
@@ -75,5 +81,10 @@ var Game = {
         // Game drawing process
         this.playerTrack.draw(this.canvasCtx);
         this.player.draw(this.canvasCtx);
+
+        if (this.debugMonitor) {
+            this.debugMonitor.innerHTML = `Speed: ${this.player.speed}<br>` +
+                `Direction: ${this.player.direction}`;
+        }
     }
 };
