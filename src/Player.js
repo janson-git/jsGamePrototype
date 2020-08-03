@@ -36,6 +36,9 @@ var Player = {
         this.speed -= (this.deceleration * tDiff);
     },
     break: function(tDiff) {
+        if (this.speed === 0) {
+            return;
+        }
         var coeff = this.speed > 0 ? 1 : -1;
         this.speed -= (coeff * this.deceleration * tDiff);
         if (this.speed < 0) {
@@ -60,7 +63,6 @@ var Player = {
         this.x = this.x + (v * Math.sin(this.direction));
         this.y = this.y + (v * Math.cos(this.direction));
 
-        console.log(this.x, this.y, this.speed);
         this.lastTick = lastTick;
     },
 
