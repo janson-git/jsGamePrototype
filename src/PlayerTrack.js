@@ -1,6 +1,6 @@
 var PlayerTrack = {
     DISPLAYED_TRACKS_NUM: 6,
-    ALPHA_DEGRADATION_STEP: 0.98,
+    ALPHA_DEGRADATION_STEP: 0.92,
     TRACKS_INTERVAL_IN_TICKS: 100, // интервал между двумя соседними "следами"
     player: {}, // игрок используется, для получения из него текущих координат
     tracks: [], // отображаемые "следы" за игроком

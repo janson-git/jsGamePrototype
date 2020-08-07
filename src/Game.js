@@ -15,17 +15,14 @@ var Game = {
     playerTrack: {}, // след за игроком
 
     directionArrowImg: null,
+    boatsSpriteList: null,
 
-    init: function(canvas, canvasUI, debugMonitor, player) {
+    init: function(canvas, canvasUI, debugMonitor) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.canvasUI = canvasUI;
 
         this.debugMonitor = debugMonitor;
-        this.player = player;
-        PlayerTrack.init(this.player);
-
-        this.playerTrack = PlayerTrack;
 
         this.lastTick = performance.now();
         this.lastRender = this.lastTick;
@@ -37,13 +34,20 @@ var Game = {
 
     setInitialState: function() {
         // set initial state of game
+        this.player = Object.create(Player);
+        this.player.init(100, 100, Direction.NORTH);
+
+        this.playerTrack = Object.create(PlayerTrack);
+        this.playerTrack.init(this.player);
     },
 
     loadImages: function() {
         this.directionArrowImg = new Image();
         this.directionArrowImg.src = "img/CircledArrowRight.png";
         this.directionArrowImg.style.transform = 'rotate(-90deg)';
-        this.directionArrowImg.style.opacity = "";
+
+        this.boatsSpriteList = new Image();
+        this.boatsSpriteList.src = Player.spriteImage;
     },
 
     play: function() {
@@ -90,6 +94,9 @@ var Game = {
 
     render: function() {
         this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // Закрасим игровое поле - водой
+        // this.canvasCtx.fillStyle = '#3F47CB';
+        // this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvasCtx.save();
 
         // Game drawing process
@@ -98,7 +105,7 @@ var Game = {
 
         if (this.debugMonitor) {
             this.debugMonitor.innerHTML = `Speed: ${this.player.speed}<br>` +
-                `Direction: ${this.player.direction}`;
+                `Direction: ${this.player.direction * 180 / Math.PI}`;
         }
 
         this.renderInfoOverlay();
@@ -117,14 +124,13 @@ var Game = {
 
         // стрелку нужно нарисовать в направлении player.direction
         ctxUI.translate(arrowPosX + arrowWidth/2, arrowPosY + arrowHeight/2);
-        ctxUI.rotate(-(this.player.direction - (90 * Math.PI / 180)));
+        ctxUI.rotate((this.player.direction - (90 * Math.PI / 180)));
         ctxUI.drawImage(this.directionArrowImg, arrowWidth / 2 * (-1), arrowHeight / 2 * (-1), arrowWidth, arrowHeight);
 
         ctxUI.restore();
 
         ctxUI.save();
         // если игрок вышел за пределы поля - дорисовать метки по краю, чтобы было ясно где он
-        // если игрок вышел за пределы поля - рисуем горизонтальную метку положения игрока
         var markWidth = 5;
         var markHeight = 5;
         var xPosition = this.player.x;

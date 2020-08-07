@@ -88,10 +88,8 @@
                 Keyboard.onKeydown(event);
             }, false);
 
-            Player.init(100, 100, Direction.NORTH);
-
             var debugMonitor = document.getElementById('debug_monitor');
-            Game.init(canvas, canvasUI, debugMonitor, Player); // TODO: add player
+            Game.init(canvas, canvasUI, debugMonitor);
             Game.play();
 
         } else {
