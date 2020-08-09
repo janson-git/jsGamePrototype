@@ -8,10 +8,11 @@ var Player = {
     direction: undefined,
     speed: 0, // m/sec
     acceleration: 15, // m/sec^2
-    deceleration: 30, // m/sec^2
+    deceleration: 20, // m/sec^2
     rotateSpeed: Math.PI / 2, // Radians per second
     lastTick: undefined,
     spriteImage: 'img/boatsSpriteListTransparent.png',
+    spriteScale: 1, // масштабирование спрайта. Обычно 1:1
     spriteRotateSize: 11.25, // 11.25 градусов на спрайт
     currentSpriteIndex: 0,
     spriteConfig: {
@@ -26,7 +27,7 @@ var Player = {
         7: {sx: 166, sy: 4, h: 20, w: 26, mirror: false}, // 78.75 градусов
         8: {sx: 195, sy: 5, h: 19, w: 26, mirror: false}, // 90 градусов
         9: {sx: 224, sy: 4, h: 20, w: 26, mirror: false}, // 101.25 градусов
-        10: {sx: 253, sy: 4, h: 20, w: 26, mirror: false}, // 112.5 градусов
+        10: {sx: 253, sy: 4, h: 19, w: 26, mirror: false}, // 112.5 градусов
         11: {sx: 282, sy: 3, h: 21, w: 24, mirror: false}, // 123.75 градусов
         12: {sx: 308, sy: 2, h: 21, w: 24, mirror: false}, // 135 градусов
         13: {sx: 334, sy: 2, h: 22, w: 20, mirror: false}, // 146.25 градусов
@@ -39,7 +40,7 @@ var Player = {
         19: {sx: 334, sy: 2, h: 22, w: 20, mirror: true}, // 213.75 градусов
         20: {sx: 308, sy: 2, h: 21, w: 24, mirror: true}, // 225 градусов
         21: {sx: 282, sy: 3, h: 21, w: 24, mirror: true}, // 236.25 градусов
-        22: {sx: 253, sy: 4, h: 21, w: 26, mirror: true}, // 247.5 градусов
+        22: {sx: 253, sy: 4, h: 19, w: 26, mirror: true}, // 247.5 градусов
         23: {sx: 224, sy: 4, h: 20, w: 26, mirror: true}, // 258.75 градусов
         24: {sx: 195, sy: 5, h: 19, w: 26, mirror: true}, // 270 градусов
         25: {sx: 166, sy: 4, h: 20, w: 26, mirror: true}, // 281.25 градусов
@@ -191,16 +192,6 @@ var Player = {
      * @param ctx Canvas context
      */
     draw: function(ctx) {
-        // сейчас игрок - это маленький квадратик
-        // удалим старое изображение и нарисуем новую позицию
-        // if (this.drawedX && this.drawedY) {
-        //     // ctx.fillStyle = 'rgb(255, 255, 255)';
-        //     ctx.clearRect(this.drawedX - (this.sizeX/2), this.drawedY - (this.sizeY/2), this.sizeX, this.sizeY);
-        // }
-
-        // ctx.fillStyle = 'rgb(200, 0, 0)';
-        // ctx.fillRect(this.x - (this.sizeX/2), this.y - (this.sizeY/2), this.sizeX, this.sizeY);
-
         // рисуем нужный спрайт
         var spriteConfig = this.getSpriteConfig();
         this.drawSprite(ctx, spriteConfig);
@@ -213,17 +204,22 @@ var Player = {
         ctx.save();
 
         // откуда рисуем спрайт
-        ctx.translate(this.x, this.y);
+        ctx.translate(Math.floor(this.x), Math.floor(this.y));
 
         if (sprite.mirror === true) {
             // зеркалируем
             ctx.scale(-1, 1);
         }
 
+        var scale = this.spriteScale;
+        var startPosX = (-1) * Math.floor((sprite.w * scale) / 2);
+        var startPosY = (-1) * Math.floor((sprite.h * scale) / 2);
+
         ctx.drawImage(
             Game.boatsSpriteList,
             // фактически нужно будет отрисовывать спрайт, чтобы текущее положение игрока проходило через его центр
-            sprite.sx, sprite.sy, sprite.w, sprite.h, -sprite.w / 2, -sprite.h / 2, sprite.w, sprite.h
+            sprite.sx, sprite.sy, sprite.w, sprite.h,
+            startPosX, startPosY, sprite.w * scale, sprite.h * scale
         );
 
         ctx.restore();
