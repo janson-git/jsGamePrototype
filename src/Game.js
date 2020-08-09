@@ -105,7 +105,8 @@ var Game = {
 
         if (this.debugMonitor) {
             this.debugMonitor.innerHTML = `Speed: ${this.player.speed}<br>` +
-                `Direction: ${this.player.direction * 180 / Math.PI}`;
+                `Direction: ${this.player.direction * 180 / Math.PI}<br>` +
+                `Sprite index: ${this.player.currentSpriteIndex}`;
         }
 
         this.renderInfoOverlay();

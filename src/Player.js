@@ -13,41 +13,42 @@ var Player = {
     lastTick: undefined,
     spriteImage: 'img/boatsSpriteListTransparent.png',
     spriteRotateSize: 11.25, // 11.25 градусов на спрайт
+    currentSpriteIndex: 0,
     spriteConfig: {
         // Каждый спрайт показывает угол, от которого + и - на 6 градусов его и рисуем
-        0: {sx: 0, sy: 0, h: 25, w: 17, mirror: false}, // 0 градусов
-        1: {sx: 19, sy: 0, h: 25, w: 19, mirror: false}, // 11.25 градусов
-        2: {sx: 41, sy: 0, h: 25, w: 19, mirror: false}, // 22.50 градуса
-        3: {sx: 62, sy: 0, h: 25, w: 20, mirror: false}, // 33.75 градусов
-        4: {sx: 85, sy: 0, h: 25, w: 23, mirror: false}, // 45 градусов
-        5: {sx: 111, sy: 0, h: 25, w: 24, mirror: false}, // 56.25 градусов
-        6: {sx: 138, sy: 0, h: 25, w: 24, mirror: false}, // 67.5 градусов
-        7: {sx: 166, sy: 0, h: 25, w: 26, mirror: false}, // 78.75 градусов
-        8: {sx: 195, sy: 0, h: 25, w: 26, mirror: false}, // 90 градусов
-        9: {sx: 224, sy: 0, h: 25, w: 26, mirror: false}, // 101.25 градусов
-        10: {sx: 253, sy: 0, h: 25, w: 26, mirror: false}, // 112.5 градусов
-        11: {sx: 282, sy: 0, h: 25, w: 24, mirror: false}, // 123.75 градусов
-        12: {sx: 308, sy: 0, h: 25, w: 24, mirror: false}, // 135 градусов
-        13: {sx: 334, sy: 0, h: 25, w: 20, mirror: false}, // 146.25 градусов
-        14: {sx: 356, sy: 0, h: 25, w: 20, mirror: false}, // 157.5 градусов
-        15: {sx: 378, sy: 0, h: 25, w: 18, mirror: false}, // 168.75 градусов
-        16: {sx: 398, sy: 0, h: 25, w: 18, mirror: false}, // 180 градусов
+        0: {sx: 0, sy: 0, h: 24, w: 17, mirror: false}, // 0 градусов
+        1: {sx: 20, sy: 0, h: 24, w: 18, mirror: false}, // 11.25 градусов
+        2: {sx: 41, sy: 0, h: 24, w: 19, mirror: false}, // 22.50 градуса
+        3: {sx: 62, sy: 0, h: 24, w: 20, mirror: false}, // 33.75 градусов
+        4: {sx: 85, sy: 2, h: 20, w: 23, mirror: false}, // 45 градусов
+        5: {sx: 111, sy: 3, h: 20, w: 24, mirror: false}, // 56.25 градусов
+        6: {sx: 138, sy: 3, h: 20, w: 24, mirror: false}, // 67.5 градусов
+        7: {sx: 166, sy: 4, h: 20, w: 26, mirror: false}, // 78.75 градусов
+        8: {sx: 195, sy: 5, h: 19, w: 26, mirror: false}, // 90 градусов
+        9: {sx: 224, sy: 4, h: 20, w: 26, mirror: false}, // 101.25 градусов
+        10: {sx: 253, sy: 4, h: 20, w: 26, mirror: false}, // 112.5 градусов
+        11: {sx: 282, sy: 3, h: 21, w: 24, mirror: false}, // 123.75 градусов
+        12: {sx: 308, sy: 2, h: 21, w: 24, mirror: false}, // 135 градусов
+        13: {sx: 334, sy: 2, h: 22, w: 20, mirror: false}, // 146.25 градусов
+        14: {sx: 357, sy: 1, h: 23, w: 19, mirror: false}, // 157.5 градусов
+        15: {sx: 378, sy: 0, h: 24, w: 18, mirror: false}, // 168.75 градусов
+        16: {sx: 398, sy: 0, h: 24, w: 17, mirror: false}, // 180 градусов
         // Для углов свыше 180 и до 360 - отображаем отражённые спрайты
-        17: {sx: 378, sy: 0, h: 25, w: 18, mirror: true}, // 191.25 градусов
-        18: {sx: 356, sy: 0, h: 25, w: 20, mirror: true}, // 202.5 градусов
-        19: {sx: 334, sy: 0, h: 25, w: 20, mirror: true}, // 213.75 градусов
-        20: {sx: 308, sy: 0, h: 25, w: 24, mirror: true}, // 225 градусов
-        21: {sx: 282, sy: 0, h: 25, w: 24, mirror: true}, // 236.25 градусов
-        22: {sx: 253, sy: 0, h: 25, w: 26, mirror: true}, // 247.5 градусов
-        23: {sx: 224, sy: 0, h: 25, w: 26, mirror: true}, // 258.75 градусов
-        24: {sx: 195, sy: 0, h: 25, w: 26, mirror: true}, // 270 градусов
-        25: {sx: 166, sy: 0, h: 25, w: 26, mirror: true}, // 281.25 градусов
-        26: {sx: 138, sy: 0, h: 25, w: 24, mirror: true}, // 292.5 градусов
-        27: {sx: 111, sy: 0, h: 25, w: 24, mirror: true}, // 303.75 градусов
-        28: {sx: 85, sy: 0, h: 25, w: 23, mirror: true}, // 315 градусов
-        29: {sx: 62, sy: 0, h: 25, w: 20, mirror: true}, // 326.25 градусов
-        30: {sx: 41, sy: 0, h: 25, w: 19, mirror: true}, // 337.5 градуса
-        31: {sx: 19, sy: 0, h: 25, w: 19, mirror: true}, // 348.75 градусов
+        17: {sx: 378, sy: 0, h: 24, w: 18, mirror: true}, // 191.25 градусов
+        18: {sx: 357, sy: 1, h: 23, w: 19, mirror: true}, // 202.5 градусов
+        19: {sx: 334, sy: 2, h: 22, w: 20, mirror: true}, // 213.75 градусов
+        20: {sx: 308, sy: 2, h: 21, w: 24, mirror: true}, // 225 градусов
+        21: {sx: 282, sy: 3, h: 21, w: 24, mirror: true}, // 236.25 градусов
+        22: {sx: 253, sy: 4, h: 21, w: 26, mirror: true}, // 247.5 градусов
+        23: {sx: 224, sy: 4, h: 20, w: 26, mirror: true}, // 258.75 градусов
+        24: {sx: 195, sy: 5, h: 19, w: 26, mirror: true}, // 270 градусов
+        25: {sx: 166, sy: 4, h: 20, w: 26, mirror: true}, // 281.25 градусов
+        26: {sx: 138, sy: 3, h: 20, w: 24, mirror: true}, // 292.5 градусов
+        27: {sx: 111, sy: 3, h: 20, w: 24, mirror: true}, // 303.75 градусов
+        28: {sx: 85, sy: 2, h: 20, w: 23, mirror: true}, // 315 градусов
+        29: {sx: 62, sy: 0, h: 24, w: 20, mirror: true}, // 326.25 градусов
+        30: {sx: 41, sy: 0, h: 24, w: 19, mirror: true}, // 337.5 градуса
+        31: {sx: 20, sy: 0, h: 24, w: 18, mirror: true}, // 348.75 градусов
     },
 
     getSpriteConfig() {
@@ -126,6 +127,7 @@ var Player = {
         }
 
         config = that.spriteConfig[index];
+        this.currentSpriteIndex = index;
 
         return config;
     },
