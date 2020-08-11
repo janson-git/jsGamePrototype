@@ -1,10 +1,11 @@
 var Player = {
+    map: null,
     x: undefined,
     y: undefined,
-    sizeX: 6,
-    sizeY: 6,
     drawedX: undefined,
     drawedY: undefined,
+    drawedWidth: undefined,
+    drawedHeight: undefined,
     direction: undefined,
     speed: 0, // m/sec
     acceleration: 15, // m/sec^2
@@ -133,7 +134,8 @@ var Player = {
         return config;
     },
 
-    init: function(startX, startY, direction) {
+    init: function(map, startX, startY, direction) {
+        this.map = map;
         this.x = startX;
         this.y = startY;
         this.direction = direction;
@@ -181,10 +183,49 @@ var Player = {
         if (Keyboard.isDown(Keyboard.RIGHT)) this.turnRight(tDiff);
 
         var v = this.speed * tDiff;
-        this.x = this.x + (v * Math.sin(this.direction));
-        this.y = this.y + (-1 * v * Math.cos(this.direction)); // в canvas ось Y - идёт вниз. А мы хотим рисовать вверх.
+        var diffX = (v * Math.sin(this.direction));
+        var diffY = (-1 * v * Math.cos(this.direction));
+
+        this.x = this.x + diffX;
+        this.y = this.y + diffY; // в canvas ось Y - идёт вниз. А мы хотим рисовать вверх.
+
+        // проверим на столкновения
+        this.checkCollide(diffX, diffY);
+
+        var maxX = this.map.cols * this.map.tsize;
+        var maxY = this.map.rows * this.map.tsize;
+        this.x = Math.max(0, Math.min(this.x, maxX));
+        this.y = Math.max(0, Math.min(this.y, maxY));
 
         this.lastTick = lastTick;
+    },
+
+    checkCollide: function (diffX, diffY) {
+        var row, col;
+        // -1 in right and bottom is because image ranges from 0..63
+        // and not up to 64
+        // проверяем по размерам последнего спрайта, чтобы не дёргать на каждой проверке спрайт-конфиг
+        var left = this.x - this.drawedWidth / 2;
+        var right = this.x + this.drawedWidth / 2 - 1;
+        var top = this.y - this.drawedHeight / 2;
+        var bottom = this.y + this.drawedHeight / 2 - 1;
+
+        if (diffY > 0 && this.map.isSolidTileAtXY(this.x, bottom)) {
+            row = this.map.getRow(bottom);
+            this.y = -this.drawedHeight / 2 + this.map.getY(row);
+        }
+        else if (diffY < 0 && this.map.isSolidTileAtXY(this.x, top)) {
+            row = this.map.getRow(top);
+            this.y = this.drawedHeight / 2 + this.map.getY(row + 1);
+        }
+        if (diffX > 0 && this.map.isSolidTileAtXY(right, this.y)) {
+            col = this.map.getCol(right);
+            this.x = -this.drawedWidth / 2 + this.map.getX(col);
+        }
+        else if (diffX < 0 && this.map.isSolidTileAtXY(left, this.y)) {
+            col = this.map.getCol(left);
+            this.x = this.drawedWidth / 2 + this.map.getX(col + 1);
+        }
     },
 
     /**
@@ -198,6 +239,8 @@ var Player = {
 
         this.drawedX = this.x;
         this.drawedY = this.y;
+        this.drawedWidth = spriteConfig.w;
+        this.drawedHeight = spriteConfig.h;
     },
 
     drawSprite: function(ctx, sprite, dX = 0, dY = 0) {

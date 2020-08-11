@@ -17,6 +17,9 @@ var Game = {
     directionArrowImg: null,
     boatsSpriteList: null,
 
+    tileAtlas: null,
+    camera: null,
+
     init: function(canvas, canvasUI, debugMonitor) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
@@ -35,10 +38,13 @@ var Game = {
     setInitialState: function() {
         // set initial state of game
         this.player = Object.create(Player);
-        this.player.init(100, 100, Direction.NORTH);
+        this.player.init(map, 100, 100, Direction.NORTH);
 
         this.playerTrack = Object.create(PlayerTrack);
         this.playerTrack.init(this.player);
+
+        this.camera = new Camera(map, 512, 512);
+        this.camera.follow(this.player);
     },
 
     loadImages: function() {
@@ -48,6 +54,10 @@ var Game = {
 
         this.boatsSpriteList = new Image();
         this.boatsSpriteList.src = Player.spriteImage;
+
+        this.tileAtlas = new Image();
+        this.tileAtlas.src = 'img/tiles.png';
+        // Loader.loadImage('tiles', 'img/tiles.png');
     },
 
     play: function() {
@@ -90,6 +100,9 @@ var Game = {
     update: function(lastTick) {
         this.player.update(lastTick);
         this.playerTrack.update(lastTick);
+
+        // движение камеры зависит от движения игрока
+        this.camera.move(lastTick, this.player);
     },
 
     render: function() {
@@ -97,6 +110,8 @@ var Game = {
         // Закрасим игровое поле - водой
         // this.canvasCtx.fillStyle = '#3F47CB';
         // this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.renderMapLayer(0);
+        this.renderMapLayer(1);
         this.canvasCtx.save();
 
         // Game drawing process
@@ -110,6 +125,38 @@ var Game = {
         }
 
         this.renderInfoOverlay();
+    },
+    renderMapLayer: function(layer) {
+        var startCol = Math.floor(this.camera.x / map.tsize);
+        var endCol = startCol + (this.camera.width / map.tsize);
+        var startRow = Math.floor(this.camera.y / map.tsize);
+        var endRow = startRow + (this.camera.height / map.tsize);
+        var offsetX = -this.camera.x + startCol * map.tsize;
+        var offsetY = -this.camera.y + startRow * map.tsize;
+
+        var ctx = this.canvasCtx;
+
+        for (var c = startCol; c <= endCol; c++) {
+            for (var r = startRow; r <= endRow; r++) {
+                var tile = map.getTile(layer, c, r);
+                var x = (c - startCol) * map.tsize + offsetX;
+                var y = (r - startRow) * map.tsize + offsetY;
+                if (tile !== 0) { // 0 => empty tile
+                    ctx.drawImage(
+                        this.tileAtlas, // image
+                        (tile - 1) * map.tsize, // source x
+                        0, // source y
+                        map.tsize, // source width
+                        map.tsize, // source height
+                        Math.round(x),  // target x
+                        Math.round(y), // target y
+                        map.tsize, // target width
+                        map.tsize // target height
+                    );
+                }
+            }
+        }
+
     },
     renderInfoOverlay: function() {
         // что отображаем в оверлее:
