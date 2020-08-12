@@ -7,10 +7,11 @@ var Player = {
     drawedWidth: undefined,
     drawedHeight: undefined,
     direction: undefined,
+    MAX_SPEED: 50,
+    ACCELERATION: 20, // m/sec^2
+    DECELERATION: 20, // m/sec^2
+    ROTATE_SPEED: Math.PI / 2, // Radians per second
     speed: 0, // m/sec
-    acceleration: 15, // m/sec^2
-    deceleration: 20, // m/sec^2
-    rotateSpeed: Math.PI / 2, // Radians per second
     lastTick: undefined,
     spriteImage: 'img/boatsSpriteListTransparent.png',
     spriteScale: 1, // масштабирование спрайта. Обычно 1:1
@@ -141,29 +142,32 @@ var Player = {
         this.direction = direction;
     },
     turnLeft: function(tDiff) {
-        this.direction -= (this.rotateSpeed * tDiff);
+        this.direction -= (this.ROTATE_SPEED * tDiff);
         if (this.direction < 0) {
             this.direction = Direction.MAX_VALUE - (this.direction);
         }
     },
     turnRight: function(tDiff) {
-        this.direction += (this.rotateSpeed * tDiff);
+        this.direction += (this.ROTATE_SPEED * tDiff);
         if (this.direction > Direction.MAX_VALUE) {
             this.direction = this.direction - Direction.MAX_VALUE;
         }
     },
     speedUp: function(tDiff) {
-        this.speed += (this.acceleration * tDiff);
+        this.speed += (this.ACCELERATION * tDiff);
+        if (this.speed > this.MAX_SPEED) {
+            this.speed = this.MAX_SPEED;
+        }
     },
     speedDown: function(tDiff) {
-        this.speed -= (this.deceleration * tDiff);
+        this.speed -= (this.DECELERATION * tDiff);
     },
     break: function(tDiff) {
         if (this.speed === 0) {
             return;
         }
         var coeff = this.speed > 0 ? 1 : -1;
-        this.speed -= (coeff * this.deceleration * tDiff);
+        this.speed -= (coeff * this.DECELERATION * tDiff);
         if (this.speed < 0) {
             this.speed = 0;
         }
