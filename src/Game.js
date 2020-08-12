@@ -38,12 +38,13 @@ var Game = {
     setInitialState: function() {
         // set initial state of game
         this.player = Object.create(Player);
-        this.player.init(map, 160, 160, Direction.NORTH);
+        this.player.init(Map, 160, 160, Direction.NORTH);
 
         this.playerTrack = Object.create(PlayerTrack);
         this.playerTrack.init(this.player);
 
-        this.camera = new Camera(map, 512, 448);
+        this.camera = new Camera(Map, 512, 448);
+        // мы хотим, чтобы камера следовала за игроком
         this.camera.follow(this.player);
     },
 
@@ -107,9 +108,7 @@ var Game = {
 
     render: function() {
         this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        // Закрасим игровое поле - водой
-        // this.canvasCtx.fillStyle = '#3F47CB';
-        // this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // рисуем карту
         this.renderMapLayer(0);
         this.renderMapLayer(1);
         this.canvasCtx.save();
@@ -127,31 +126,31 @@ var Game = {
         this.renderInfoOverlay();
     },
     renderMapLayer: function(layer) {
-        var startCol = Math.floor(this.camera.x / map.tsize);
-        var endCol = startCol + (this.camera.width / map.tsize);
-        var startRow = Math.floor(this.camera.y / map.tsize);
-        var endRow = startRow + (this.camera.height / map.tsize);
-        var offsetX = -this.camera.x + startCol * map.tsize;
-        var offsetY = -this.camera.y + startRow * map.tsize;
+        var startCol = Math.floor(this.camera.x / Map.tsize);
+        var endCol = startCol + (this.camera.width / Map.tsize);
+        var startRow = Math.floor(this.camera.y / Map.tsize);
+        var endRow = startRow + (this.camera.height / Map.tsize);
+        var offsetX = -this.camera.x + startCol * Map.tsize;
+        var offsetY = -this.camera.y + startRow * Map.tsize;
 
         var ctx = this.canvasCtx;
 
         for (var c = startCol; c <= endCol; c++) {
             for (var r = startRow; r <= endRow; r++) {
-                var tile = map.getTile(layer, c, r);
-                var x = (c - startCol) * map.tsize + offsetX;
-                var y = (r - startRow) * map.tsize + offsetY;
+                var tile = Map.getTile(layer, c, r);
+                var x = (c - startCol) * Map.tsize + offsetX;
+                var y = (r - startRow) * Map.tsize + offsetY;
                 if (tile !== 0) { // 0 => empty tile
                     ctx.drawImage(
                         this.tileAtlas, // image
-                        (tile - 1) * map.tsize, // source x
+                        (tile - 1) * Map.tsize, // source x
                         0, // source y
-                        map.tsize, // source width
-                        map.tsize, // source height
+                        Map.tsize, // source width
+                        Map.tsize, // source height
                         Math.round(x),  // target x
                         Math.round(y), // target y
-                        map.tsize, // target width
-                        map.tsize // target height
+                        Map.tsize, // target width
+                        Map.tsize // target height
                     );
                 }
             }
