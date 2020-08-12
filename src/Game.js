@@ -57,7 +57,7 @@ var Game = {
         this.boatsSpriteList.src = Player.spriteImage;
 
         this.tileAtlas = new Image();
-        this.tileAtlas.src = 'img/tiles.png';
+        this.tileAtlas.src = 'img/tiles_water_tree.png';
         // Loader.loadImage('tiles', 'img/tiles.png');
     },
 
@@ -173,39 +173,6 @@ var Game = {
         ctxUI.translate(arrowPosX + arrowWidth/2, arrowPosY + arrowHeight/2);
         ctxUI.rotate((this.player.direction - (90 * Math.PI / 180)));
         ctxUI.drawImage(this.directionArrowImg, arrowWidth / 2 * (-1), arrowHeight / 2 * (-1), arrowWidth, arrowHeight);
-
-        ctxUI.restore();
-
-        ctxUI.save();
-        // если игрок вышел за пределы поля - дорисовать метки по краю, чтобы было ясно где он
-        var markWidth = 5;
-        var markHeight = 5;
-        var xPosition = this.player.x;
-        var yPosition = this.player.y;
-        if (this.player.x > this.canvas.width || this.player.x < 0) {
-            xPosition = this.player.x < 0 ? 5 : this.canvas.width - 5;
-            var c = this.player.x < 0 ? 1 : (-1);
-
-            var x2 = xPosition + (markWidth * c);
-            ctxUI.beginPath();
-            ctxUI.moveTo(xPosition, yPosition);
-            ctxUI.lineTo(x2, yPosition + 5);
-            ctxUI.lineTo(x2, yPosition - 5);
-            ctxUI.fillStyle = 'rgb(255, 0, 0)';
-            ctxUI.fill();
-        }
-        if (this.player.y > this.canvas.height || this.player.y < 0) {
-            yPosition = this.player.y < 0 ? 5 : this.canvas.height - 5;
-            var c = this.player.y < 0 ? 1 : (-1);
-
-            var y2 = yPosition + (markHeight * c);
-            ctxUI.beginPath();
-            ctxUI.moveTo(xPosition, yPosition);
-            ctxUI.lineTo(xPosition + 5, y2);
-            ctxUI.lineTo(xPosition - 5, y2);
-            ctxUI.fillStyle = 'rgb(255, 0, 0)';
-            ctxUI.fill();
-        }
 
         ctxUI.restore();
     }
