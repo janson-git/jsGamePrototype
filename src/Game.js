@@ -38,12 +38,12 @@ var Game = {
     setInitialState: function() {
         // set initial state of game
         this.player = Object.create(Player);
-        this.player.init(map, 100, 100, Direction.NORTH);
+        this.player.init(map, 160, 160, Direction.NORTH);
 
         this.playerTrack = Object.create(PlayerTrack);
         this.playerTrack.init(this.player);
 
-        this.camera = new Camera(map, 512, 512);
+        this.camera = new Camera(map, 512, 448);
         this.camera.follow(this.player);
     },
 
@@ -102,7 +102,7 @@ var Game = {
         this.playerTrack.update(lastTick);
 
         // движение камеры зависит от движения игрока
-        this.camera.move(lastTick, this.player);
+        this.camera.update(lastTick);
     },
 
     render: function() {

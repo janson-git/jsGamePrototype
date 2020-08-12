@@ -247,7 +247,7 @@ var Player = {
         ctx.save();
 
         // откуда рисуем спрайт
-        ctx.translate(Math.floor(this.x), Math.floor(this.y));
+        ctx.translate(Math.floor(this.screenX), Math.floor(this.screenY));
 
         if (sprite.mirror === true) {
             // зеркалируем
