@@ -2,6 +2,7 @@ var Map = {
     cols: 12,
     rows: 12,
     tsize: 64,
+    solidTiles: [3,5],
     layers: [[
         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
         3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3,
@@ -30,6 +31,14 @@ var Map = {
         4, 4, 4, 0, 0, 3, 3, 3, 3, 3, 3, 3
     ]],
 
+    // Загружаем внешние данные из конфигурации в карту
+    init: function(cols, rows, tsize, layers, solidTiles) {
+        this.cols = cols;
+        this.rows = rows;
+        this.tsize = tsize;
+        this.layers = layers;
+        this.solidTiles = solidTiles;
+    },
     getTile: function (layer, col, row) {
         return this.layers[layer][row * Map.cols + col];
     },
@@ -41,7 +50,8 @@ var Map = {
         // loop through all layers and return TRUE if any tile is solid
         return this.layers.reduce(function (res, layer, index) {
             var tile = this.getTile(index, col, row);
-            var isSolid = tile === 3 || tile === 5;
+
+            var isSolid = (this.solidTiles.indexOf(tile) !== -1);
             return res || isSolid;
         }.bind(this), false);
     },

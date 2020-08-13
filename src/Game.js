@@ -19,6 +19,8 @@ var Game = {
     tileAtlas: null,
     camera: null,
 
+    level: null,
+
     init: function(canvas, canvasUI, debugMonitor) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
@@ -36,15 +38,23 @@ var Game = {
 
     setInitialState: function() {
         // set initial state of game
+        var level = Levels[1];
+        var map = level.map;
+        Map.init(map.cols, map.rows, map.tsize, map.layers, map.solidTiles);
+        this.level = level;
+
         this.player = Object.create(Player);
         this.player.init(Map, 160, 160, Direction.NORTH);
 
         this.playerTrack = Object.create(PlayerTrack);
         this.playerTrack.init(this.player);
 
-        this.camera = new Camera(Map, 512, 448);
+        this.camera = new Camera(Map, 500, 400);
         // мы хотим, чтобы камера следовала за игроком
         this.camera.follow(this.player);
+
+        this.tileAtlas = new Image();
+        this.tileAtlas.src = this.level.spriteImage;
     },
 
     loadImages: function() {
@@ -55,8 +65,11 @@ var Game = {
         this.boatsSpriteList = new Image();
         this.boatsSpriteList.src = Player.spriteImage;
 
+        // this.tileAtlas = new Image();
+        // this.tileAtlas.src = 'img/tiles_water_tree.png';
+
         this.tileAtlas = new Image();
-        this.tileAtlas.src = 'img/tiles_water_tree.png';
+        this.tileAtlas.src = 'img/WaterMazeTiles.png';
         // Loader.loadImage('tiles', 'img/tiles.png');
     },
 
@@ -116,6 +129,8 @@ var Game = {
         this.playerTrack.draw(this.canvasCtx);
         this.player.draw(this.canvasCtx);
 
+        this.canvasCtx.restore();
+
         if (this.debugMonitor) {
             this.debugMonitor.innerHTML = `Speed: ${this.player.speed}<br>` +
                 `Direction: ${this.player.direction * 180 / Math.PI}<br>` +
@@ -133,17 +148,21 @@ var Game = {
         var offsetY = -this.camera.y + startRow * Map.tsize;
 
         var ctx = this.canvasCtx;
+        var level = this.level;
+        var levelTiles = level.map.tiles;
 
         for (var c = startCol; c <= endCol; c++) {
             for (var r = startRow; r <= endRow; r++) {
                 var tile = Map.getTile(layer, c, r);
                 var x = (c - startCol) * Map.tsize + offsetX;
                 var y = (r - startRow) * Map.tsize + offsetY;
-                if (tile !== 0) { // 0 => empty tile
+                if (tile > 0) { // 0 => empty tile
+                    var tileConfig = levelTiles[tile];
+
                     ctx.drawImage(
                         this.tileAtlas, // image
-                        (tile - 1) * Map.tsize, // source x
-                        0, // source y
+                        tileConfig.sx, // source x
+                        tileConfig.sy, // source y
                         Map.tsize, // source width
                         Map.tsize, // source height
                         Math.round(x),  // target x
