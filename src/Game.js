@@ -65,12 +65,8 @@ var Game = {
         this.boatsSpriteList = new Image();
         this.boatsSpriteList.src = Player.spriteImage;
 
-        // this.tileAtlas = new Image();
-        // this.tileAtlas.src = 'img/tiles_water_tree.png';
-
         this.tileAtlas = new Image();
         this.tileAtlas.src = 'img/WaterMazeTiles.png';
-        // Loader.loadImage('tiles', 'img/tiles.png');
     },
 
     play: function() {
